@@ -352,7 +352,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &776434076
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -461,3 +461,4 @@ MonoBehaviour:
   moveRight: 100
   speed: 5
   jumpHeight: 300
+  decelVar: 0.98
