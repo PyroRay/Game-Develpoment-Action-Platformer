@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿// its on line 69
+
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -12,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 10.0f;
     public float jumpHeight = 10.0f;
     public float decelVar = 0.98f;
+    public float dashDistance = 10.0f;
     private bool isJumping = false;
     private bool hasDoubleJump = true;
     private bool onPlatform = false;
@@ -63,6 +67,13 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
             onPlatform = false;
         }
+
+        //if (Input.GetMouseButtonDown(0))
+        //{
+            //Debug.Log("Dash");
+           // Direction = Input.mousePosition
+        
+        //}
 
     }
 
