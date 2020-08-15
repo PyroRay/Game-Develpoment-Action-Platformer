@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpHeight = 10.0f;
     public float decelVar = 0.98f;
     public float dashDistance = 10.0f;
+    private Vector3 mousePos;
+    private float dashAngle;
     private bool isJumping = false;
     private bool hasDoubleJump = true;
     private bool onPlatform = false;
@@ -68,12 +70,20 @@ public class PlayerMovement : MonoBehaviour
             onPlatform = false;
         }
 
-        //if (Input.GetMouseButtonDown(0))
-        //{
-            //Debug.Log("Dash");
-           // Direction = Input.mousePosition
-        
-        //}
+        if (Input.GetMouseButtonDown(0))
+        {
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Debug.Log("Dash");
+            Vector2 Direction = new Vector2(rb2d.position.x - mousePos.x, rb2d.position.y - mousePos.y);
+            //Debug.Log(rb2d.transform.position);
+            //Debug.Log(mousePos);
+            dashAngle = Mathf.Atan2(Direction.y, Direction.x) + Mathf.PI;
+            rb2d.velocity = new Vector2(rb2d.velocity.x, 0);
+            rb2d.AddForce(new Vector2(dashDistance / Mathf.Cos(dashAngle), dashDistance / Mathf.Sin(dashAngle)));
+
+            //Debug.Log(dashAngle * 180 / Mathf.PI);
+            //Debug.Log(Direction);        
+        }
 
     }
 
