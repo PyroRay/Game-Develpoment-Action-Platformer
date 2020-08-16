@@ -18,9 +18,10 @@ public class PlayerMovement : MonoBehaviour
     public float dashDistance = 10.0f;
     private Vector3 mousePos;
     private float dashAngle;
-    private bool isJumping = false;
+    private bool inAir = false;
     private bool hasDoubleJump = true;
     private bool onPlatform = false;
+    private bool isDecel = true;
     private Rigidbody2D rb2d;
 
     // Start is called before the first frame update
@@ -41,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         {
             vel.x = speed;
         }
-        else
+        else if (isDecel)
         {
             Debug.Log("decellerate");
             vel.x = vel.x * decelVar;
@@ -50,11 +51,12 @@ public class PlayerMovement : MonoBehaviour
         rb2d.velocity = vel;
 
 
-        if (Input.GetKeyDown(moveUp) && !isJumping) // both conditions can be in the same branch
+        if (Input.GetKeyDown(moveUp) && !inAir) // both conditions can be in the same branch
         {
             Debug.Log("jump");
+            Debug.Log(onPlatform);
             rb2d.AddForce(Vector2.up * jumpHeight);
-            isJumping = true;
+            inAir = true;
         }
         else if (Input.GetKeyDown(moveUp) && onPlatform && hasDoubleJump)
         {
@@ -66,22 +68,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (rb2d.velocity.y > 0.01 && rb2d.velocity.y < -0.01)
         {
-            isJumping = false;
+            inAir = true;
             onPlatform = false;
         }
 
         if (Input.GetMouseButtonDown(0))
         {
+            isDecel = false;
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Debug.Log("Dash");
             Vector2 Direction = new Vector2(rb2d.position.x - mousePos.x, rb2d.position.y - mousePos.y);
-            //Debug.Log(rb2d.transform.position);
-            //Debug.Log(mousePos);
             dashAngle = Mathf.Atan2(Direction.y, Direction.x) + Mathf.PI;
-            rb2d.velocity = new Vector2(rb2d.velocity.x, 0);
-            rb2d.AddForce(new Vector2(dashDistance / Mathf.Cos(dashAngle), dashDistance / Mathf.Sin(dashAngle)));
+            rb2d.velocity = new Vector2(dashDistance * Mathf.Cos(dashAngle), dashDistance * Mathf.Sin(dashAngle));
 
-            //Debug.Log(dashAngle * 180 / Mathf.PI);
             //Debug.Log(Direction);        
         }
 
@@ -92,9 +91,10 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log(col.gameObject.tag);
         if (col.gameObject.tag == "Platform") // GameObject is a type, gameObject is the property
         {
-            isJumping = false;
+            inAir = false;
             hasDoubleJump = true;
             onPlatform = true;
+            isDecel = true;
         }
 
     }
