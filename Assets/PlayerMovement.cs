@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         dashTime = fixedDashTime;
-        dashCooldown = fixedDashCooldown;
+        dashCooldown = 0.5f;
     }
 
     // Update is called once per frame
@@ -105,9 +105,10 @@ public class PlayerMovement : MonoBehaviour
 
             //Debug.Log(Direction);        
         }
-        else
+        else if(dashCooldown >= 0)
         {
             dashCooldown -= Time.deltaTime;
+            Debug.Log(dashCooldown);
             inDash = false;
         }
     }
