@@ -480,4 +480,4 @@ MonoBehaviour:
   decelVar: 0.995
   dashMagnitude: 8
   fixedDashTime: 0.25
-  fixedDashCooldown: 5
+  fixedDashCooldown: 1
