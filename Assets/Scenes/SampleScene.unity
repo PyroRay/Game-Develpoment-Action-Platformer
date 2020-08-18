@@ -477,6 +477,7 @@ MonoBehaviour:
   moveRight: 100
   speed: 5
   jumpHeight: 300
-  decelVar: 0.98
+  decelVar: 0.995
   dashMagnitude: 8
   fixedDashTime: 0.25
+  fixedDashCooldown: 5

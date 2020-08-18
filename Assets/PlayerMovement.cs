@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     public float decelVar = 0.98f;
     public float dashMagnitude = 10.0f;
     public float fixedDashTime = 1.0f;
+    public float fixedDashCooldown = 1.0f;
+    private float dashCooldown;
     private float dashTime;
     private bool inDash = false;
     private float dashAngle;
@@ -32,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         dashTime = fixedDashTime;
+        dashCooldown = fixedDashCooldown;
     }
 
     // Update is called once per frame
@@ -70,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
             hasDoubleJump = false;
         }
 
-        if (rb2d.velocity.y > 0.01 && rb2d.velocity.y < -0.01)
+        if (rb2d.velocity.y > 0.001 && rb2d.velocity.y < -0.001)
         {
             inAir = true;
             onPlatform = false;
@@ -85,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
             dashAngle = Mathf.Atan2(Direction.y, Direction.x) + Mathf.PI;
         }
 
-        if (inDash) 
+        if (inDash && dashCooldown <= 0) 
         { 
             if(dashTime >= 0.0f)
             {
@@ -96,12 +99,17 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 dashTime = fixedDashTime;
+                dashCooldown = fixedDashCooldown;
                 inDash = false;
             }
 
             //Debug.Log(Direction);        
         }
-
+        else
+        {
+            dashCooldown -= Time.deltaTime;
+            inDash = false;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D col)
