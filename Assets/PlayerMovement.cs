@@ -15,9 +15,12 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 10.0f;
     public float jumpHeight = 10.0f;
     public float decelVar = 0.98f;
-    public float dashDistance = 10.0f;
-    private Vector3 mousePos;
+    public float dashMagnitude = 10.0f;
+    public float fixedDashTime = 1.0f;
+    private float dashTime;
+    private bool inDash = false;
     private float dashAngle;
+    private Vector3 mousePos;
     private bool inAir = false;
     private bool hasDoubleJump = true;
     private bool onPlatform = false;
@@ -28,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        dashTime = fixedDashTime;
     }
 
     // Update is called once per frame
@@ -74,12 +78,26 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            isDecel = false;
+            inDash = true;
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Debug.Log("Dash");
             Vector2 Direction = new Vector2(rb2d.position.x - mousePos.x, rb2d.position.y - mousePos.y);
             dashAngle = Mathf.Atan2(Direction.y, Direction.x) + Mathf.PI;
-            rb2d.velocity = new Vector2(dashDistance * Mathf.Cos(dashAngle), dashDistance * Mathf.Sin(dashAngle));
+        }
+
+        if (inDash) 
+        { 
+            if(dashTime >= 0.0f)
+            {
+                dashTime -= Time.deltaTime;
+                isDecel = false;
+                rb2d.velocity = new Vector2(dashMagnitude * Mathf.Cos(dashAngle), dashMagnitude * Mathf.Sin(dashAngle));
+            }
+            else
+            {
+                dashTime = fixedDashTime;
+                inDash = false;
+            }
 
             //Debug.Log(Direction);        
         }
