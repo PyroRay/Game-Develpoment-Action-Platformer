@@ -61,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
         //    inAir = true;
         //}
 
-        if (Input.GetKeyDown(moveUp) && !inAir) // both conditions can be in the same branch
+        if (Input.GetKeyDown(moveUp) && !inAir) 
         {
             Debug.Log("jump");
             Debug.Log(inAir);
@@ -112,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Platform") // GameObject is a type, gameObject is the property
+        if (col.gameObject.tag == "Platform") 
         {
             inAir = false;
             hasDoubleJump = true;
@@ -122,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Platform") // GameObject is a type, gameObject is the property
+        if (collision.gameObject.tag == "Platform")
         {
             Debug.Log("exit platform collision");
             inAir = true;
