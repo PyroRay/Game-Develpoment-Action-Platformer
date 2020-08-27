@@ -27,11 +27,17 @@ public class PlayerMovement : MonoBehaviour
     private bool hasDoubleJump = true;
     private bool isDecel = true;
     private Rigidbody2D rb2d;
+    private BoxCollider2D feetCol;
+    private EdgeCollider2D headCol;
+    private PolygonCollider2D sideCol;
 
     // Start is called before the first frame update
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        feetCol = GetComponent<BoxCollider2D>();
+        headCol = GetComponent<EdgeCollider2D>();
+        sideCol = GetComponent<PolygonCollider2D>();
         dashTime = fixedDashTime;
         dashCooldown = 0.5f;
     }
@@ -112,8 +118,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Platform") 
+        if (col.gameObject.tag == "Platform" && feetCol.IsTouching(col.collider)) 
         {
+            Debug.Log("On Platform");
             inAir = false;
             hasDoubleJump = true;
             isDecel = true;
@@ -122,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Platform")
+        if (collision.gameObject.tag == "Platform" && feetCol.IsTouching(collision.collider))
         {
             Debug.Log("exit platform collision");
             inAir = true;
