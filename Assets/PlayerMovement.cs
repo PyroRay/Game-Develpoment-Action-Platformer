@@ -27,17 +27,13 @@ public class PlayerMovement : MonoBehaviour
     private bool hasDoubleJump = true;
     private bool isDecel = true;
     private Rigidbody2D rb2d;
-    private BoxCollider2D feetCol;
-    private EdgeCollider2D headCol;
-    private PolygonCollider2D sideCol;
+    private BoxCollider2D boxCollider2d;
 
     // Start is called before the first frame update
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        feetCol = GetComponent<BoxCollider2D>();
-        headCol = GetComponent<EdgeCollider2D>();
-        sideCol = GetComponent<PolygonCollider2D>();
+        boxCollider2d = GetComponent<BoxCollider2D>();
         dashTime = fixedDashTime;
         dashCooldown = 0.5f;
     }
@@ -56,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isDecel)
         {
-            Debug.Log("decellerate");
+            //Debug.Log("decellerate");
             vel.x = vel.x * decelVar;
         }
 
@@ -69,14 +65,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(moveUp) && !inAir) 
         {
-            Debug.Log("jump");
-            Debug.Log(inAir);
+            //Debug.Log("jump");
+            //Debug.Log(inAir);
             rb2d.AddForce(Vector2.up * jumpHeight);
             inAir = true;
         }
         else if (Input.GetKeyDown(moveUp) && inAir && hasDoubleJump)
         {
-            Debug.Log("double jump");
+            //Debug.Log("double jump");
             rb2d.velocity = new Vector2(rb2d.velocity.x, 0);
             rb2d.AddForce(new Vector2(0, jumpHeight));
             hasDoubleJump = false;
@@ -116,11 +112,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (col.gameObject.tag == "Platform" && feetCol.IsTouching(col.collider)) 
+        Debug.Log(collision.GetContact(0).point.y + " contact point 0");
+        Debug.Log(collision.GetContact(1).point.y + " contact point 1");
+        Debug.Log(collision.GetContact(2).point.y + " contact point 2");
+        Debug.Log(rb2d.position.y + " player centrepoint");
+        if (collision.gameObject.tag == "Platform" && collision.GetContact(0).point.y < rb2d.position.y) 
         {
-            Debug.Log("On Platform");
+            //Debug.Log("On Platform");
             inAir = false;
             hasDoubleJump = true;
             isDecel = true;
@@ -129,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Platform" && feetCol.IsTouching(collision.collider))
+        if (collision.gameObject.tag == "Platform")
         {
             Debug.Log("exit platform collision");
             inAir = true;
