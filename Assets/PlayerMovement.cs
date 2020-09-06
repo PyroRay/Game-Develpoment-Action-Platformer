@@ -28,13 +28,16 @@ public class PlayerMovement : MonoBehaviour
     private bool isDecel = true;
     private Rigidbody2D rb2d;
     private BoxCollider2D boxCollider2d;
+    private EdgeCollider2D edgeCollider2d;
 
     // Start is called before the first frame update
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         boxCollider2d = GetComponent<BoxCollider2D>();
+        edgeCollider2d = GetComponent<EdgeCollider2D>();
         dashTime = fixedDashTime;
+
         dashCooldown = 0.5f;
     }
 
@@ -112,28 +115,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.GetContact(0).point.y + " contact point 0");
-        Debug.Log(collision.GetContact(1).point.y + " contact point 1");
-        Debug.Log(collision.GetContact(2).point.y + " contact point 2");
-        Debug.Log(rb2d.position.y + " player centrepoint");
-        if (collision.gameObject.tag == "Platform" && collision.GetContact(0).point.y < rb2d.position.y) 
-        {
-            //Debug.Log("On Platform");
-            inAir = false;
-            hasDoubleJump = true;
-            isDecel = true;
-        }
+        inAir = false;
+        hasDoubleJump = true;
+        isDecel = true;
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Platform")
-        {
-            Debug.Log("exit platform collision");
-            inAir = true;
-            isDecel = false;
-        }
+        Debug.Log("exit trigger collision");
+        inAir = true;
+        isDecel = false;
     }
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Debug.Log(collision.GetContact(0).point.y + " contact point 0");
+    //    //Debug.Log(collision.GetContact(1).point.y + " contact point 1");
+    //    //Debug.Log(collision.GetContact(2).point.y + " contact point 2");
+    //    Debug.Log(rb2d.position.y + " player centrepoint");
+    //    if (collision.gameObject.tag == "Platform" && collision.GetContact(0).point.y < rb2d.position.y) 
+    //    {
+    //        //Debug.Log("On Platform");
+    //        inAir = false;
+    //        hasDoubleJump = true;
+    //        isDecel = true;
+    //    }
+    //}
+
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.tag == "Platform")
+    //    {
+    //        Debug.Log("exit platform collision");
+    //        inAir = true;
+    //        isDecel = false;
+    //    }
+    //}
 }
