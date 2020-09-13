@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb2d;
     private BoxCollider2D boxCollider2d;
     private EdgeCollider2D edgeCollider2d;
+    private Animator _anim;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         boxCollider2d = GetComponent<BoxCollider2D>();
         edgeCollider2d = GetComponent<EdgeCollider2D>();
+        _anim = GetComponent<Animator>();
         dashTime = fixedDashTime;
 
         dashCooldown = 0.5f;
