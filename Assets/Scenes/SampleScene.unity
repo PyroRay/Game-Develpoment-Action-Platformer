@@ -574,7 +574,9 @@ MonoBehaviour:
   moveRight: 100
   speed: 7
   jumpHeight: 400
-  decelVar: 0.9
+  decelVar: 0.98
+  groundDecelVar: 0.98
+  airDecelVar: 0.995
   dashMagnitude: 8
   fixedDashTime: 0.25
   fixedDashCooldown: 1

@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 10.0f;
     public float jumpHeight = 10.0f;
     public float decelVar = 0.98f;
+    public float groundDecelVar = 0.98f;
+    public float airDecelVar = 0.90f;
     public float dashMagnitude = 10.0f;
     public float fixedDashTime = 1.0f;
     public float fixedDashCooldown = 1.0f;
@@ -49,16 +51,42 @@ public class PlayerMovement : MonoBehaviour
         var vel = rb2d.velocity;
         if (Input.GetKey(moveLeft))
         {
-            vel.x = -speed;
+            if (vel.x > 0)
+            {
+                vel.x = vel.x * decelVar;
+                if ((vel.x < 1 && vel.x > 0) || (vel.x > -1 && vel.x < 0))
+                {
+                    vel.x = 0;
+                }
+            }
+            else
+            {
+                vel.x = -speed;
+            }
         }
         else if (Input.GetKey(moveRight))
         {
-            vel.x = speed;
+            if (vel.x < 0)
+            {
+                vel.x = vel.x * decelVar;
+                if ((vel.x < 1 && vel.x > 0) || (vel.x > -1 && vel.x < 0))
+                {
+                    vel.x = 0;
+                }
+            }
+            else
+            {
+                vel.x = speed;
+            }
         }
         else if (isDecel)
         {
             //Debug.Log("decellerate");
             vel.x = vel.x * decelVar;
+            if ((vel.x < 1 && vel.x > 0) || (vel.x > -1 && vel.x < 0))
+            {
+                vel.x = 0;
+            }
         }
 
         rb2d.velocity = vel;
@@ -97,7 +125,8 @@ public class PlayerMovement : MonoBehaviour
             if(dashTime >= 0.0f)
             {
                 dashTime -= Time.deltaTime;
-                isDecel = false;
+                decelVar = airDecelVar;
+                //isDecel = false;
                 rb2d.velocity = new Vector2(dashMagnitude * Mathf.Cos(dashAngle), dashMagnitude * Mathf.Sin(dashAngle));
             }
             else
@@ -121,14 +150,16 @@ public class PlayerMovement : MonoBehaviour
     {
         inAir = false;
         hasDoubleJump = true;
-        isDecel = true;
+        decelVar = groundDecelVar;
+        //isDecel = true;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         Debug.Log("exit trigger collision");
         inAir = true;
-        isDecel = false;
+        decelVar = airDecelVar;
+        //isDecel = false;
     }
 
     //private void OnCollisionEnter2D(Collision2D collision)
