@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public Animator animator;
+
     public KeyCode moveUp = KeyCode.W;
     public KeyCode moveDown = KeyCode.S;
     public KeyCode moveLeft = KeyCode.A;
@@ -14,9 +16,6 @@ public class PlayerMovement : MonoBehaviour
 
     public float speed = 10.0f;
     public float jumpHeight = 10.0f;
-    public float decelVar = 0.98f;
-    public float groundDecelVar = 0.98f;
-    public float airDecelVar = 0.90f;
     public float dashMagnitude = 10.0f;
     public float fixedDashTime = 1.0f;
     public float fixedDashCooldown = 1.0f;
@@ -27,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 mousePos;
     private bool inAir = false;
     private bool hasDoubleJump = true;
-    private bool isDecel = true;
     private Rigidbody2D rb2d;
     private BoxCollider2D boxCollider2d;
     private EdgeCollider2D edgeCollider2d;
@@ -51,50 +49,22 @@ public class PlayerMovement : MonoBehaviour
         var vel = rb2d.velocity;
         if (Input.GetKey(moveLeft))
         {
-            if (vel.x > 0)
-            {
-                vel.x = vel.x * decelVar;
-                if ((vel.x < 1 && vel.x > 0) || (vel.x > -1 && vel.x < 0))
-                {
-                    vel.x = 0;
-                }
-            }
-            else
-            {
-                vel.x = -speed;
-            }
+            vel.x = -speed;
+            transform.localScale = new Vector3(-0.09506838f, 0.1882557f, 1);
         }
         else if (Input.GetKey(moveRight))
         {
-            if (vel.x < 0)
-            {
-                vel.x = vel.x * decelVar;
-                if ((vel.x < 1 && vel.x > 0) || (vel.x > -1 && vel.x < 0))
-                {
-                    vel.x = 0;
-                }
-            }
-            else
-            {
-                vel.x = speed;
-            }
+            vel.x = speed;
+            transform.localScale = new Vector3(0.09506838f, 0.1882557f, 1);
         }
-        else if (isDecel)
+        else
         {
-            //Debug.Log("decellerate");
-            vel.x = vel.x * decelVar;
-            if ((vel.x < 1 && vel.x > 0) || (vel.x > -1 && vel.x < 0))
-            {
-                vel.x = 0;
-            }
+            vel.x = 0;
         }
+
+        animator.SetFloat("Speed", Mathf.Abs(vel.x));
 
         rb2d.velocity = vel;
-
-        //if (rb2d.velocity.y > 0.001 && rb2d.velocity.y < -0.001)
-        //{
-        //    inAir = true;
-        //}
 
         if (Input.GetKeyDown(moveUp) && !inAir) 
         {
@@ -125,8 +95,6 @@ public class PlayerMovement : MonoBehaviour
             if(dashTime >= 0.0f)
             {
                 dashTime -= Time.deltaTime;
-                decelVar = airDecelVar;
-                //isDecel = false;
                 rb2d.velocity = new Vector2(dashMagnitude * Mathf.Cos(dashAngle), dashMagnitude * Mathf.Sin(dashAngle));
             }
             else
@@ -150,40 +118,12 @@ public class PlayerMovement : MonoBehaviour
     {
         inAir = false;
         hasDoubleJump = true;
-        decelVar = groundDecelVar;
-        //isDecel = true;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         Debug.Log("exit trigger collision");
         inAir = true;
-        decelVar = airDecelVar;
-        //isDecel = false;
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    Debug.Log(collision.GetContact(0).point.y + " contact point 0");
-    //    //Debug.Log(collision.GetContact(1).point.y + " contact point 1");
-    //    //Debug.Log(collision.GetContact(2).point.y + " contact point 2");
-    //    Debug.Log(rb2d.position.y + " player centrepoint");
-    //    if (collision.gameObject.tag == "Platform" && collision.GetContact(0).point.y < rb2d.position.y) 
-    //    {
-    //        //Debug.Log("On Platform");
-    //        inAir = false;
-    //        hasDoubleJump = true;
-    //        isDecel = true;
-    //    }
-    //}
-
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.tag == "Platform")
-    //    {
-    //        Debug.Log("exit platform collision");
-    //        inAir = true;
-    //        isDecel = false;
-    //    }
-    //}
 }
